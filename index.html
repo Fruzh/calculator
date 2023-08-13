@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcu - Free Online Calculator</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    html, body {
+        overflow-x: hidden;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* ===> Navbar Start <=== */
+    nav {
+        width: 100%;
+        margin-top: 20px;
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        z-index: 100;
+    }
+    .nav {
+        width: calc(100% - 50px);
+        max-width: 1400px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 30px;
+        border-radius: 50px;
+        background-color: white;
+        box-shadow: 10px 15px 50px rgba(0, 0, 0, 0.25);
+        transition: .3s ease;
+    }
+    .nav.active {
+        background-color: rgba(26, 29, 38, 1);
+    }
+    .nav h1 {
+        font-size: 24px;
+        color: var(--nav-color);
+        font-weight: 800;
+        transition: .3s ease;
+    }
+    .nav .change-mode {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .nav .dark-mode {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        fill: #323232;
+    }
+    .nav .dark-mode.active {
+        display: none;
+    }
+    .nav .light-mode {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        fill: #FFFFFF;
+        display: none;
+    }
+    .nav .light-mode.active {
+        display: block;
+    }
+    /* ===> Navbar END <=== */
+
+
+
+    /* ===> Container Start <=== */
+    /* --> Light-Mode */
+    :root {
+        --primary-color: #2C3B71;
+        --secondary-color: #6A7AA2;
+        --nav-color: #323232;
+
+        /* -- calculator -- */
+        /* input */
+        --primary-input-color: #2C3B71;
+        --secondary-input-color: rgba(44, 59, 113, 0.6);
+
+        /* button */
+        --primary-btn-bg-color: rgba(255, 255, 255, 0.5);
+        --primary-btn-border: #FFFFFF;
+        --secondary-btn-bg-color: rgba(255, 255, 255, 0.5);
+        --calc-btn-bg-color: rgba(255, 255, 255, 0.25);
+    }
+    /* --> Dark-Mode */
+    :root.active {
+        --primary-color: #FFFFFF;
+        --secondary-color: #AAB5D1;
+        --nav-color: #FFFFFF;
+
+        /* -- calculator -- */
+        /* input */
+        --primary-input-color: #FFFFFF;
+        --secondary-input-color: rgba(255, 255, 255, 0.6);
+
+        /* button */
+        --primary-btn-bg-color: rgba(42, 47, 53, 0.5);
+        --primary-btn-border: transparent;
+        --secondary-btn-bg-color: rgba(72, 81, 91, 0.5);
+        --calc-btn-bg-color: rgba(255, 255, 255, 0.1);
+    }
+
+
+    /* ===> Landing-Page Start <=== */
+    .landing-page {
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, #FFFFFF 0%, #8EFFEB 25%, #B1B5FF 70%, #4791FF 100%);
+        display: flex;
+        justify-content: center;
+        position: relative;
+        transition: background 3s ease;
+    }
+    .landing-page::after {
+        content: '';
+        left: 0;
+        top: 0;
+        position: absolute;
+        transition: .3s ease;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        opacity: 0;
+        background: linear-gradient(135deg, #131314 0%, #051C18 25%, #090A2B 70%, #061427 100%);
+    }
+    .landing-page.active::after {
+        opacity: 1;
+    }
+    .container-landing-page {
+        z-index: 5;
+        width: 100%;
+        max-width: 1400px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 120px 20px 0;
+    }
+    .left h1 {
+        font-size: 64px;
+        color: var(--primary-color);
+        line-height: 120%;
+        font-weight: 800;
+        transition: .3s ease;
+    }
+    .left p {
+        margin-top: 70px;
+        font-size: 18px;
+        color: var(--secondary-color);
+        font-weight: 600;
+        transition: .3s ease;
+    }
+    .container-calculator {
+        margin-right: 15%;
+        position: relative;
+    }
+    .calculator {
+        z-index: 2;
+        width: 360px;
+        height: 640px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 32px;
+        background: linear-gradient(135deg, #FFFFFF -20%, #FFFFFF00 120%);
+        border-radius: 30px;
+        backdrop-filter: blur(100px);
+        box-shadow: 20px 30px 50px rgba(35, 104, 142, 0.3);
+        position: relative;
+        transition: .3s ease;
+    }
+    .calculator::after {
+        z-index: 3;
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border-radius: 30px;
+        opacity: 0;
+        background: linear-gradient(135deg, #1E1F23 -20%, #1E1F2300 120%);
+    }
+    .calculator.active {
+        background: transparent;
+        box-shadow: none;
+    }
+    .calculator.active::after {
+        opacity: 1;
+    }
+    .downer {
+        z-index: 5;
+        width: 100%;
+        display: grid;
+        grid-template-areas: 
+        '. . . .'
+        '. . . .'
+        '. . . a'
+        '. . . a'
+        'b b . .';
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+    .calculator p {
+        z-index: 5;
+        text-align: right;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--secondary-input-color);
+        margin-bottom: -16px;
+    }
+    .calculator input {
+        z-index: 5;
+        padding: 8px 0;
+        margin-bottom: 32px;
+        text-align: right;
+        background-color: transparent;
+        border: none;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--primary-input-color);
+        font-family: 'Poppins', sans-serif;
+    }
+    .calculator input::placeholder {
+        color: var(--primary-input-color);
+    }
+    .downer button {
+        cursor: pointer;
+        width: 60px;
+        height: 60px;
+        font-family: 'Montserrat', sans-serif;
+        border-radius: 15px;
+        border: var(--primary-btn-border);
+        box-shadow: 5px 3px 30px rgba(35, 104, 142, 0.1);
+        font-size: 24px;
+        font-weight: 700;
+        color: #2F7D96;
+        transition: .3s ease;
+    }
+    .downer button.active {
+        background-color: #2F7D96;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: white;
+        box-shadow: 0 0 50px #2F7D9650;
+    }
+
+    /* all !button number */
+    .downer button:not(.btn-number) {
+        background-color: var(--primary-btn-bg-color);
+        color: #37AED4;
+    }
+    .downer button.active:not(.btn-number) {
+        background-color: #37AED4;
+        color: white;
+        box-shadow: 0 0 50px #37AED450;
+    }
+
+    /* button (all number & .) */
+    .downer .btn-number {
+        background-color: var(--secondary-btn-bg-color);
+    }
+
+    /* button (+) */
+    .downer .button-1 {
+        grid-area: a;
+        height: 100%;
+    }
+
+    /* button (0) */
+    .downer .button-2 {
+        grid-area: b;
+        width: 100%;
+    }
+
+    /* button (=) */
+    .downer button.button-calc {
+        background-color: #2A83D6;
+        border: 1px solid var(--calc-btn-bg-color);
+        box-shadow: 5px 5px 30px #2A83D6;
+        color: white;
+    }
+    .downer button.button-calc.active {
+        background-color: #2A83D6;
+        box-shadow: 0px 0px 0px #2A83D6;
+    }
+
+
+    /* decoration (only works when dark-mode) */
+    .dec {
+        display: none;
+        transition: .3s ease;
+    }
+    .dec.active {
+        display: block;
+        position: absolute;
+        filter: blur(50px);
+    }
+    .dec-1 {
+        animation: glow 3s infinite;
+        width: 200px;
+        height: 100px;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(calc(-50% + 80px));
+    }
+    .dec-2 {
+        animation: glow-2 5s infinite;
+        width: 100px;
+        height: 300px;
+        left: 50%;
+        top: 160px;
+        transform: translateX(calc(-50% - 130px));
+    }
+    .dec-3 {
+        animation: glow 4s infinite;
+        width: 100px;
+        height: 100px;
+        top: 0;
+        left: 50%;
+        transform: translateX(calc(-50% + 130px));
+    }
+    @keyframes glow {
+        0%, 100% {
+            background-color: #0085FF;
+        } 50% {
+            background-color: #0085FF50;
+        }
+    }
+    @keyframes glow-2 {
+        0%, 100% {
+            background-color: #0085FF50;
+        } 50% {
+            background-color: #0085FF;
+        }
+    }
+    /* ===> Landing-Page END <=== */
+
+    /* ===> Responsive Start <=== */
+    @media screen and (max-width: 1000px) {
+        .landing-page {
+            height: auto;
+            min-height: 100vh;
+            padding-bottom: 120px;
+        }
+        .container-landing-page {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+        .left h1 {
+            font-size: 56px;
+        }
+        .left p {
+            margin: 32px 0 60px;
+        }
+
+        /* calculator */
+        .container-calculator {
+            margin: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    }
+    @media screen and (max-width: 500px) {
+        .landing-page {
+            padding-bottom: 60px;
+        }
+        .container-landing-page {
+            padding: 100px 20px 0;
+        }
+        .left h1 {
+            font-size: 32px;
+        }
+        .left p {
+            font-size: 16px;
+            margin: 21px 0 60px;
+        }
+    }
+    /* ===> Responsive END <=== */
+</style>
+<body>
+    <!-- ===> Navbar Start <=== -->
+    <nav>
+        <div class="nav">
+            <h1>Calcu</h1>
+            <div class="change-mode">
+                <svg class="dark-mode" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.1599 0.234793C15.2973 -0.723817 17.149 1.44163 16.4804 3.3218C14.2115 9.70147 15.6055 16.9474 20.315 21.6589C25.0484 26.3946 32.3361 27.7865 38.7312 25.475C40.592 24.8024 42.6969 26.6375 41.777 28.7258C41.7497 28.7875 41.7223 28.849 41.6946 28.9107C40.0572 32.5445 37.4381 35.9619 34.0495 38.2531C30.4378 40.6952 26.1785 42 21.8193 42H21.8172C16.7481 41.9945 11.8387 40.2249 7.93054 36.9948C4.02239 33.7647 1.35891 29.2749 0.396893 24.2951C-0.56512 19.3153 0.234298 14.1559 2.65804 9.70124C4.95574 5.47822 8.81946 2.19649 13.097 0.263074L13.1599 0.234793Z"/>
+                </svg>
+                <svg class="light-mode" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21.0027 31.503C26.8022 31.503 31.5037 26.8015 31.5037 21.002C31.5037 15.2025 26.8022 10.501 21.0027 10.501C15.2032 10.501 10.5017 15.2025 10.5017 21.002C10.5017 26.8015 15.2032 31.503 21.0027 31.503Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.8759 20.9967C7.8759 19.5457 6.70183 18.3717 5.25082 18.3717H2.62508C1.17407 18.3717 0 19.5457 0 20.9967C0 22.4477 1.17407 23.6218 2.62508 23.6218H5.25016C6.70183 23.6218 7.8759 22.4477 7.8759 20.9967Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.00922 30.2777L6.15066 32.1369C5.12491 33.162 5.12491 34.8237 6.15066 35.8488C7.17576 36.8739 8.83743 36.8739 9.86318 35.8488L11.7224 33.9902C12.7475 32.9651 12.7475 31.3028 11.7224 30.2777C10.696 29.252 9.03497 29.252 8.00922 30.2777Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.0025 34.1235C19.5515 34.1235 18.3774 35.2975 18.3774 36.7485V39.3743C18.3774 40.8253 19.5515 41.9994 21.0025 41.9994C22.4535 41.9994 23.6276 40.8253 23.6276 39.3743L23.625 36.7485C23.6276 35.2975 22.4509 34.1235 21.0025 34.1235Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M33.9936 30.2803C32.9705 29.2526 31.3088 29.2526 30.2837 30.2777C29.2586 31.3028 29.2586 32.9651 30.2837 33.9902L32.1403 35.8462C33.1654 36.8765 34.8271 36.8713 35.8522 35.8462C36.8773 34.8211 36.8799 33.162 35.8522 32.1343L33.9936 30.2803Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M39.3802 18.3717L36.7492 18.3769C35.3035 18.3717 34.1294 19.5457 34.1294 20.9967C34.1242 22.4477 35.3035 23.6218 36.7492 23.6218H39.375C40.8312 23.6271 42.0001 22.4477 42.0001 20.9967C42.0027 19.5483 40.8312 18.3717 39.3802 18.3717Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M33.9936 11.7184L35.8495 9.86179C36.8825 8.83407 36.8746 7.17502 35.8495 6.14927C34.8264 5.12089 33.1654 5.12089 32.1403 6.14664L30.2837 8.00782C29.2586 9.02832 29.2586 10.6893 30.2837 11.7151C31.3036 12.7468 32.9705 12.7415 33.9936 11.7184Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.0025 7.87001C22.4509 7.88051 23.6276 6.69594 23.6276 5.25018V2.6251C23.6276 1.16884 22.4535 1.75397e-05 21.0025 1.75397e-05C19.5515 -0.00523262 18.3774 1.16884 18.3774 2.62051L18.3827 5.25084C18.3774 6.69594 19.5515 7.87001 21.0025 7.87001Z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.0144 11.7158C9.0349 12.7408 10.6913 12.7408 11.7197 11.7131C12.7527 10.6953 12.7474 9.02898 11.725 8.00586L9.86837 6.14992C8.83802 5.11892 7.1816 5.1268 6.15585 6.14992C5.12222 7.17305 5.12222 8.83407 6.14797 9.85982L8.0144 11.7158Z"/>
+                </svg>
+                
+            </div>
+        </div>
+    </nav>
+    <!-- ===> Navbar END <=== -->
+
+
+
+    <!-- ===> Landing-Page Start <=== -->
+    <section class="landing-page">
+        <div class="container-landing-page">
+
+            <div class="left">
+                <h1>Free Online<br>Calculator</h1>
+                <p>Modern UI/UX Design</p>
+            </div>
+            <div class="container-calculator">
+                
+                <div class="calculator">
+                    <p id="hasilAkhir"></p>
+                    <input type="text" disabled placeholder="0" id="input">
+        
+                    <!-- downer -->
+                    <div class="downer">
+        
+                        <!-- row-1 -->
+                        <button class="button-CL" onclick="buttonClear()">Ac</button>
+                        <button class="button-CL" onclick="buttonBackspace()">C</button>
+                        <button onclick="button('/')">÷</button>
+                        <button onclick="button('*')">x</button>
+        
+                        <!-- row-2 -->
+                        <button class="btn-number" onclick="button(this.innerHTML)">7</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">8</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">9</button>
+                        <button onclick="button(this.innerHTML)">-</button>
+        
+                        <!-- row-3 -->
+                        <button class="btn-number" onclick="button(this.innerHTML)">4</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">5</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">6</button>
+                        <button class="button-1" onclick="button(this.innerHTML)">+</button> 
+        
+                        <!-- row-4 -->
+                        <button class="btn-number" onclick="button(this.innerHTML)">1</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">2</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">3</button>
+        
+                        <!-- row-5 -->
+                        <button class="button-2 btn-number" onclick="button(this.innerHTML)">0</button>
+                        <button class="btn-number" onclick="button(this.innerHTML)">.</button>
+                        <button class="button-calc" onclick="buttonCalc()">=</button>
+        
+                    </div>
+                </div>
+
+                <!-- decoration (glow in dark-mode) -->
+                <div class="dec dec-1"></div>
+                <div class="dec dec-2"></div>
+                <div class="dec dec-3"></div>
+            </div>
+        </div>
+
+    </section>
+    <!-- ===> Landing-Page END <=== -->
+
+
+
+    <!-- ===> Javascript <=== -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script>
+        // ===> Vanilla Javascript <===
+        // ===> calculator
+        let input = document.getElementById("input")
+        let hasil = document.getElementById("hasilAkhir")
+
+        // normal button
+        function button(value) {
+            input.value += value
+        }
+
+        // clear button
+        function buttonClear() {
+            input.value = null
+            hasil.innerHTML = null
+        }
+        function buttonBackspace() {
+            input.value = input.value.slice(0, -1)
+        }
+
+        // calculate button
+        function buttonCalc() {
+            hasil.innerHTML = input.value
+            input.value = eval(input.value)
+        }
+
+        // ===> Frameworks --> JQuery <===
+        $(document).ready(function() {
+
+            // ===> light/dark-mode switch
+            $(".change-mode").click(function() {
+                // switch logo
+                $(".dark-mode").toggleClass("active")
+                $(".light-mode").toggleClass("active")
+
+                // navbar
+                $(".nav").toggleClass("active")
+
+                // :root
+                $(":root").toggleClass("active")
+
+                // background landing-page
+                $(".landing-page").toggleClass("active")
+
+                // calculator
+                $(".calculator").toggleClass("active")
+
+                // glow background (only works when dark-mode)
+                $(".dec").toggleClass("active")
+            })
+
+            // ===> toggle button bg color
+            $("button").click(function() {
+                $("button").removeClass("active")
+                $(this).addClass("active")
+
+                // delay to remove class (0.5 sec)
+                setTimeout(function() {
+                    $(this).addClass("active")
+                    $("button").removeClass("active")
+                }, 500)
+            })
+        })
+    </script>
+</body>
+</html>
